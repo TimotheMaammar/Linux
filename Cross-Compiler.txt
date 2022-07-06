@@ -1,0 +1,70 @@
+### https://wiki.osdev.org
+### Compilation native = La machine est à la fois hôte et cible
+### Compilation croisée = La machine compile pour une autre plateforme
+### Exemple version monde libre (binutils + gcc) déroulé sur Kali 2021
+
+#########################
+
+sudo apt-get install build-essential bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo
+
+cd ~
+mkdir cross-compiler
+cd cross-compiler
+mkdir bin src
+cd src
+mkdir binutils gcc
+cd binutils
+
+# La liste des prérequis à installer peut varier selon les plateformes et les architectures mais se retrouve facilement sur n'importe quel tutoriel lié à l'OSDev
+
+#########################
+
+curl https://mirror.cyberbits.eu/gnu/binutils/binutils-2.10.1.tar.gz --output binutils-2.10.1.tar.gz
+
+tar xvzf binutils-2.10.1.tar.gz
+
+#########################
+
+mkdir build_binutils
+cd build_binutils
+
+export PREFIX="~/cross-compiler/"
+export TARGET=i686-elf   # Kernel 32 bits x86
+export PATH="$PREFIX/bin:$PATH"
+
+#########################
+
+ld --version # Prendre la même version ou en-dessous
+
+../binutils-2.10.1/configure --target=$TARGET --prefix="$PREFIX" --with-sysroot --disable-nls --disable-werror
+
+make
+make install
+
+#########################
+
+cd ~/cross-compiler/src/gcc
+
+gcc --version # Prendre la même version ou en-dessous
+
+mkdir curl build
+cd curl
+
+curl https://ftp.gnu.org/gnu/gcc/gcc-11.3.0/gcc-11.3.0.tar.gz --output gcc-11.3.0.tar.gz
+
+tar xvzf gcc-11.3.0.tar.gz
+
+cd ../build
+
+../curl/gcc-11.3.0/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --enable-languages=c,c++ --without-headers
+
+make
+make install
+
+# Il vaut mieux épurer et ne compiler que le nécessaire mais c'est plus chiant
+# Il faut au minimum compiler 'all-gcc' et 'all-target-libgcc'
+
+#########################
+
+~/cross-compiler/bin/$TARGET-gcc --version # Vérification finale
+
