@@ -24,7 +24,7 @@ nc -z -n -vv -w 1 $1 1-65535 >> nc.txt 2>&1 &
 
 sudo nmap -p- -sV -T4 -sC $1 -oN nmap.txt &
 
-sudo masscan -p1-65535,U:1-65535 $1 -oG masscan.txt &
+sudo masscan -p1-65535,U:1-65535 $1 -e tun0 -oG masscan.txt &
 
 sudo /home/timothe/.local/bin/autorecon $1
 
