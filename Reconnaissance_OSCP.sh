@@ -20,7 +20,7 @@ mkdir $NOM
 
 cd $NOM
 
-nc -z -n -vv -w 1 $1 1-65535 >> nc.txt 2>&1 &
+# nc -z -n -vv -w 1 $1 1-65535 >> nc.txt 2>&1 &
 
 sudo nmap -p- -sV -T4 -sC $1 -oN nmap.txt &
 
