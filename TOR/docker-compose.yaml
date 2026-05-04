@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  tor-relay:
+    build: .
+    container_name: tor-relay
+    restart: always
+    ports: ["9001:9001", "9030:9030"]
+    volumes:
+      - ./torrc:/etc/tor/torrc:ro
+      - tor-data:/var/lib/tor
+      - tor-logs:/var/log/tor
+    networks:
+      - tor-network
+volumes:
+  tor-data:
+  tor-logs:
+networks:
+  tor-network:
+    driver: bridge
